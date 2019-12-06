@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="icon" type="image/GIF" href="favicon.ico"/>
+		<meta name="baidu-tc-cerfication" content="8a702bafecce10d211fcb123f3e337ea" />
+		<style type="text/css">
+			body{
+				text-align:center;
+
+			}
+			#canvas{
+				 border:solid 1px #d3d7d4;
+			}
+			#mic{
+				display: none;
+			}
+			#span{
+				text-align: right;
+				font: bolder 50px 楷体 ;
+				color: #8a8c8e;
+			}
+		</style>
+		<script type="text/javascript" charset="UTF-8" src="js/ball.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="js/border.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="js/brick.js"></script>
+		<script type="text/javascript" charset="UTF-8" src="js/game.js"></script>
+		<script type="text/javascript" charset="UTF-8">
+			window.onload=function(){
+				var can = document.getElementById("canvas");
+				var cxt = can.getContext('2d');
+
+				var game= new Game();
+				game.brickCol = 8, game.brickRow=5,game.brickHeight=25,game.brickPad = 2,game.canWidth=600,game.canHeight=400;
+
+				var ld,rd;
+
+				game.init(cxt);//cxt----------------------
+
+				document.addEventListener('keydown',function(e){
+						if(e.keyCode == 39) rd=true;//左是37  右键39
+						else if (e.keyCode==37) ld=true;
+						},false);
+				document.addEventListener('keyup',function(e){
+						if(e.keyCode == 39) rd = false;
+						else if(e.keyCode == 37) ld= false;
+				},false);
+
+				intervalId=setInterval(function(){
+					game.draw(cxt);
+					game.run();
+
+					if(game.hitTestBall()==-1)
+					{
+						alert("Game Over!");
+						if (confirm("Play Again?")) {
+							location.href="index.html";
+						}
+						else{
+								
+									alert("Bye Bye");
+									window.close();
+								
+							}
+						intervalId = window.clearInterval(intervalId);
+					}
+
+					for(var i = 0;i<game.bricks.length;i++)//------------------------------------
+					{
+						for (var j = 0; j <game.bricks[i].length; j++) {
+							if(game.bricks[i][j]!=null){
+								game.hitTestBricks(game.bricks[i][j]);
+								if(game.k==40)
+								{
+									alert("SO COOL!");
+								}
+							}
+						};
+					}
+
+					//左右键禁止出框
+					if(game.TestBorder()==1)
+					{
+							ld= false;
+					}
+					if(game.TestBorder()==-1)
+					{
+							rd = false;
+					}
+
+					if(ld==true) game.border.x -= 5;
+					if (rd==true) game.border.x +=5;
+					game.hitTestBorder();
+					
+				},14);//16
+			}
+		</script>
+	</head>
+	<body>
+		<span id="span">SCORE:0</span><br>
+		<canvas id="canvas" width="600" height="400"></canvas><br>
+		
+		<div id="mic">
+			<audio src="Air.mp3"controls="controls" loop="true" autoplay="true" id="audio">您的浏览器太老了</audio>
+		</div>
+	</body>
+</html>
